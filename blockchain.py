@@ -72,7 +72,6 @@ class Blockchain(object):
         return block
 
     def new_transaction(self,sender, recipient, amount):
-        print("join in new_transaction")
         self.current_transactions.append({
             'sender':sender,
             'recipient':recipient,
@@ -121,7 +120,6 @@ class Blockchain(object):
 
     def resolve_conflicts(self):
         import requests
-        print("resolve_conflicts  **8")
         neighbours =self.nodes
         new_chain = None
 
@@ -154,9 +152,7 @@ blockchain = Blockchain(port_temp)
 
 @app.route('/mine', methods=['GET'])
 def mine():
-    print("join in mine")
     last_block = blockchain.last_block
-    print(last_block)
     last_proof = last_block['proof']
     proof = blockchain.proof_of_work(last_proof)
 
@@ -178,9 +174,7 @@ def mine():
 
 @app.route('/transactions/new',methods=["POST"])
 def new_transaction():
-    print("join new transactions")
     values = request.get_json()
-    print(values)
     required = ['sender', 'recipient', 'amount']
     if not all(k in values for k in required):
         return 'Missing values',400
@@ -208,7 +202,6 @@ def full_chian2():
 
 @app.route('/nodes/register', methods=['POST'])
 def register_nodes():
-    print("/nodes/register")
     values = request.get_json()
     nodes = values.get('nodes')
     if nodes is None:
@@ -226,7 +219,6 @@ def register_nodes():
 def consensus():
     print("检测并跳转到最长连")
     replaced = blockchain.resolve_conflicts()
-    print("replaced:",replaced)
     if replaced:
         response = {
             'message': 'Our chain was replaced',
@@ -246,8 +238,5 @@ def index():
 
 # "you can do it"
 if __name__ == "__main__":
-    print("heelo")
-
-
     app.run(host='0.0.0.0',port=port_temp)
 
